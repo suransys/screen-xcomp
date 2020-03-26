@@ -52,7 +52,7 @@ void UpdatingScreen::screensChangedCallback(void *userInfo){
 }
 
 UpdatingScreen::UpdatingScreen(){
-    //currentScreens = Screen::screenList();
+    currentScreens = Screen::screenList();
     //[ObjCScreen setScreensChangedListener:screensChangedCallback withUserInfo:this];
     
     ObjCScreen * localScreen =[[ObjCScreen alloc] init];
@@ -90,4 +90,8 @@ void UpdatingScreen::screenRunLoop(){
 
 void UpdatingScreen::screenEndLoop(){
     CFRunLoopStop(CFRunLoopGetCurrent());
+}
+
+std::vector<Screen> UpdatingScreen::getCurrentScreens(){
+    return currentScreens;
 }

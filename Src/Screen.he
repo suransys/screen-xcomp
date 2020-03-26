@@ -11,9 +11,12 @@ class ScreenObject
 {
 private:
     qlong timesScreenChanged = 199;
+    std::vector<Screen> currentScreens;
     UpdatingScreen updatingScreen;
     
     static EXTqlist * retrieveScreens();
+    static EXTqlist * screenListFromVector(std::vector<Screen>);
+    EXTqlist * getCurrentScreens();
     static EXTqlist * emptyScreenList();
     static EXTqlist * emptyDockList();
     static EXTqlist * retrieveDock();

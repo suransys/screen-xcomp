@@ -19,7 +19,7 @@
 
 const qlong screensFunctionId = 1;
 const qlong dockFunctionId = 2;
-const qlong numberOfTimesScreenChangedId = 3;
+const qlong currentScreensFunctionId = 3;
 const qlong screenObjectId = 4;
 
 const qlong NUMBER_OF_STATIC_METHODS = 2;
@@ -32,7 +32,7 @@ ECOmethodEvent screensStaticMethod[] = {
 };
 
 ECOmethodEvent screensMethod[] = {
-    numberOfTimesScreenChangedId, 7000, fftInteger, NULL, 0,0
+    currentScreensFunctionId, 7000, fftInteger, NULL, 0,0
 };
 
 ECOobject screenObject[] = {
@@ -48,6 +48,7 @@ void staticOnScreenChanged(std::vector<Screen> screens, void* userInfo){
 
 ScreenObject::ScreenObject(){
     updatingScreen = UpdatingScreen();
+    currentScreens = updatingScreen.getCurrentScreens();
     updatingScreen.setScreenChangeCallback(staticOnScreenChanged, this);
     updatingScreen.screenRunLoop();
 }
@@ -72,8 +73,8 @@ EXTfldval ScreenObject::staticMethodCall(qlong methodId){
 EXTfldval ScreenObject::methodCall(qlong methodId){
     EXTfldval fval;
     switch (methodId) {
-        case numberOfTimesScreenChangedId:
-            fval.setLong(timesScreenChanged);
+        case currentScreensFunctionId:
+            fval.setList(getCurrentScreens(), qtrue);
             break;
     }
     return fval;
@@ -106,8 +107,15 @@ EXTqlist * ScreenObject::emptyScreenList(){
 }
 
 EXTqlist * ScreenObject::retrieveScreens(){
+    return screenListFromVector(Screen::screenList());
+}
+
+EXTqlist * ScreenObject::getCurrentScreens(){
+    return screenListFromVector(currentScreens);
+}
+
+EXTqlist * ScreenObject::screenListFromVector(std::vector<Screen> screenVector){
     EXTqlist * staticScreenList = ScreenObject::emptyScreenList();
-    std::vector<Screen> screenVector = Screen::screenList();
     for (int i = 0; i < screenVector.size(); i ++){
         Screen screenData = screenVector[i];
         staticScreenList -> insertRow(i+1);
@@ -200,7 +208,7 @@ EXTqlist *ScreenObject::retrieveDock(){
 }
 
 void ScreenObject::onScreenChanged(std::vector<Screen> screens){
-    timesScreenChanged ++;
+    currentScreens = screens;
 }
 
 
