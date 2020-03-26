@@ -20,7 +20,7 @@ Now copy the package tools/omnisrc64.app to xcode's tools folder, like this:
 
 Still in OSX-SDK-10.1, clone the git repo
 
-`git clone ssh://git@bitbucket.suran.com:7999/sda/screen-xcomp.git`
+`git clone git@github.com:Malachi-Holden/screen-xcomp.git`
 
 In Finder, open the new cloned directory, called screen-xcomp. Open the package Screen.xcodeproj using Xcode (Clicking on this file should open it with Xcode automatically)
 
