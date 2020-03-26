@@ -1,0 +1,13 @@
+
+1   BITMAP  DISCARDABLE     "GENERIC.BMP"
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+        1000				"Screen"
+        2000				"Screen Control"
+        31000               "ScreenWndProc"
+        8000                "$screens:$screens() Returns a list of screens, each column detailing information about the screen such as height and width"
+        8001                "$dock:$dock() Returns a list with a single row, detailing the position and height of the dock. position code: -1 is left, 0 is bottom, 1 is right"
+END
+
+
