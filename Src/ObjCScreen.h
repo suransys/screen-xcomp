@@ -14,9 +14,14 @@
 
 @interface ObjCScreen : NSObject
 
+@property void (*callback)(void*);
+@property void * userInfo;
+
 -(NSArray<NSScreen*>*)getObjCScreens;
 -(NSScreen *)getMainScreen;
 -(int)getDockLocation;
+
+-(void)setScreensChangedNotification:(void (*)(void*))callback withUserInfo:(void *) userInfo;
 
 @end
 

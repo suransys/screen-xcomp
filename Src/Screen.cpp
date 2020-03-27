@@ -4,12 +4,11 @@
 #include <hwnd.he>
 #include <gdi.he>
 #include "Screen.he"
-#include "ScreenInterface.h"
 #include <vector>
 
 // Screen is a framework you can use to develop OMNIS external components.
 // It does not support any extra calls. See other Screen samples for extra support,
-// such as properties, functions, events etc. 
+// such as properties, functions, events etc.
 //
 // When this Screen object is added to a window in window design mode, it will have
 // only standard properties that apply to all window objects. e.g. left,top etc.
@@ -20,23 +19,58 @@
 
 const qlong screensFunctionId = 1;
 const qlong dockFunctionId = 2;
+const qlong currentScreensFunctionId = 3;
+const qlong screenObjectId = 4;
 
-const qlong NUMBER_OF_METHODS = 2;
+const qlong NUMBER_OF_STATIC_METHODS = 2;
+const qlong NUMBER_OF_METHODS = 1;
 
 
-ECOmethodEvent screensFunction[] = {
+ECOmethodEvent screensStaticMethod[] = {
     screensFunctionId, 8000, fftList, 0, NULL, 0, 0,
-    dockFunctionId,    8001, fftList, 0, NULL, 0, 0
+    dockFunctionId,    8001, fftList, 0, NULL, 0, 0,
 };
 
-EXTfldval ScreenObject::methodCall(qlong propertyId){
+ECOmethodEvent screensMethod[] = {
+    currentScreensFunctionId, 7000, fftInteger, NULL, 0,0
+};
+
+ECOobject screenObject[] = {
+    screenObjectId, 7001, 0, 0
+};
+
+void staticOnScreenChanged(std::vector<Screen> screens, void* userInfo){
+    ScreenObject * screenUserInfo = (ScreenObject*)userInfo;
+    if (screenUserInfo){
+        screenUserInfo -> onScreenChanged(screens);
+    }
+}
+
+ScreenObject::ScreenObject(){
+    updatingScreen = UpdatingScreen();
+    currentScreens = updatingScreen.getCurrentScreens();
+    updatingScreen.setScreenChangeCallback(staticOnScreenChanged, this);
+    updatingScreen.screenRunLoop();
+}
+
+EXTfldval ScreenObject::staticMethodCall(qlong methodId){
     EXTfldval fval;
-    switch (propertyId) {
+    switch (methodId) {
         case screensFunctionId:
             fval.setList(retrieveScreens(), qtrue);
             break;
         case dockFunctionId:
             fval.setList(retrieveDock(), qtrue);
+            break;
+    }
+    return fval;
+}
+
+EXTfldval ScreenObject::methodCall(qlong methodId){
+    EXTfldval fval;
+    switch (methodId) {
+        case currentScreensFunctionId:
+            fval.setList(getCurrentScreens(), qtrue);
             break;
     }
     return fval;
@@ -69,8 +103,15 @@ EXTqlist * ScreenObject::emptyScreenList(){
 }
 
 EXTqlist * ScreenObject::retrieveScreens(){
+    return screenListFromVector(Screen::screenList());
+}
+
+EXTqlist * ScreenObject::getCurrentScreens(){
+    return screenListFromVector(currentScreens);
+}
+
+EXTqlist * ScreenObject::screenListFromVector(std::vector<Screen> screenVector){
     EXTqlist * staticScreenList = ScreenObject::emptyScreenList();
-    std::vector<Screen> screenVector = Screen::screenList();
     for (int i = 0; i < screenVector.size(); i ++){
         Screen screenData = screenVector[i];
         staticScreenList -> insertRow(i+1);
@@ -162,6 +203,9 @@ EXTqlist *ScreenObject::retrieveDock(){
     return dockList;
 }
 
+void ScreenObject::onScreenChanged(std::vector<Screen> screens){
+    currentScreens = screens;
+}
 
 
 // Component library entry point (name as declared in resource 31000 )
@@ -180,6 +224,18 @@ extern "C" LRESULT OMNISWNDPROC ScreenWndProc(HWND hwnd, UINT Msg, WPARAM wParam
         case ECM_CONNECT:
         {
             return EXT_FLAG_LOADED|EXT_FLAG_ALWAYS_USABLE|EXT_FLAG_NVOBJECTS; // Return external flags
+        }
+        case ECM_OBJCONSTRUCT:{
+            ScreenObject * screenObject = new ScreenObject();
+            ECOinsertObject(eci, hwnd, (void*)screenObject);
+            return qtrue;
+        }
+        case ECM_OBJDESTRUCT:{
+            ScreenObject * screenObject = (ScreenObject*)ECOremoveObject( eci, hwnd );
+            if (screenObject){
+                delete screenObject;
+            }
+            return qtrue;
         }
 
         // ECM_DISCONNECT - this message is sent only once when the OMNIS session is ending and should not be confused
@@ -209,16 +265,25 @@ extern "C" LRESULT OMNISWNDPROC ScreenWndProc(HWND hwnd, UINT Msg, WPARAM wParam
             return qfalse;
         }
         case ECM_GETSTATICOBJECT:{
-            return ECOreturnMethods(gInstLib, eci, &screensFunction[0], NUMBER_OF_METHODS);
+            return ECOreturnMethods(gInstLib, eci, &screensStaticMethod[0], NUMBER_OF_STATIC_METHODS);
+        }
+        case ECM_GETMETHODNAME:{
+            return ECOreturnMethods(gInstLib, eci, &screensMethod[0], NUMBER_OF_METHODS);
+        }
+        case ECM_GETOBJECT:{
+            return ECOreturnObjects(gInstLib, eci, &screenObject[0], OBJECT_COUNT);
         }
 //        case ECM_GETMETHODNAME:
 //            return ECOreturnMethods(gInstLib, eci, &screensFunction[0], NUMBER_OF_METHODS);
         case ECM_METHODCALL:{
-            //ScreenObject * object = (ScreenObject*)ECOfindObject(eci, hwnd);
-            //if (!object) break;
-            //object -> methodCall(ECOgetId(eci));
-            EXTfldval fval = ScreenObject::methodCall(ECOgetId(eci));
-            ECOaddParam(eci,&fval);
+            ScreenObject * object = (ScreenObject*)ECOfindObject(eci, hwnd);
+            if (!object) {
+                EXTfldval fval = ScreenObject::staticMethodCall(ECOgetId(eci));
+                ECOaddParam(eci,&fval);
+                return 1L;
+            }
+            EXTfldval fval = object -> methodCall(ECOgetId(eci));
+            ECOaddParam(eci, &fval);
             return 1L;
         }
     }
@@ -228,4 +293,4 @@ extern "C" LRESULT OMNISWNDPROC ScreenWndProc(HWND hwnd, UINT Msg, WPARAM wParam
     return WNDdefWindowProc(hwnd,Msg,wParam,lParam,eci);
 }
 
-	
+    

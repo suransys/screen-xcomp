@@ -1,6 +1,8 @@
 {
 "COMP_RES_1000" = "Screen";
 "COMP_RES_2000" = "Screen Control";
+"COMP_RES_7000" = "$currentScreens:$currentScreens() Returns a list of screens, cached and updated automatically when the screens change";
+"COMP_RES_7001" = "Screen: screen object";
 "COMP_RES_8000" = "$screens:$screens() Returns a list of screens, each column detailing information about the screen such as height and width";
 "COMP_RES_8001" = "$dock:$dock() Returns a list with a single row, detailing the position and height of the dock. position code: -1 is left, 0 is bottom, 1 is right";
 "COMP_RES_31000" = "ScreenWndProc";

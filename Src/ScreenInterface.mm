@@ -44,4 +44,48 @@ int Screen::dockPosition(){
 }
 
 
+void UpdatingScreen::screensChangedCallback(void *userInfo){
+    if (!userInfo) return;
+    UpdatingScreen * instUpdatingScreen = (UpdatingScreen*)userInfo;
+    if (!instUpdatingScreen) return;
+    instUpdatingScreen -> resetCurrentScreens();
+}
 
+UpdatingScreen::UpdatingScreen(){
+    currentScreens = Screen::screenList();
+    
+    ObjCScreen * localScreen =[[ObjCScreen alloc] init];
+    [localScreen setScreensChangedNotification:screensChangedCallback withUserInfo:this];
+    
+    objCScreen = (__bridge void*)localScreen;
+}
+
+void UpdatingScreen::setScreenChangeCallback(void (*onScreenChanged)(std::vector<Screen>, void*), void* userInfo){
+    _onScreenChanged = onScreenChanged;
+    currentUserInfo = userInfo;
+}
+
+void UpdatingScreen::notifyScreensChanged(){
+    if (_onScreenChanged){
+        _onScreenChanged(currentScreens, currentUserInfo);
+    }
+}
+
+void UpdatingScreen::resetCurrentScreens(){
+    currentScreens = Screen::screenList();
+    notifyScreensChanged();
+}
+
+void UpdatingScreen::screenRunLoop(){
+    NSApplicationLoad();
+    CFRunLoopRun();
+}
+
+
+void UpdatingScreen::screenEndLoop(){
+    CFRunLoopStop(CFRunLoopGetCurrent());
+}
+
+std::vector<Screen> UpdatingScreen::getCurrentScreens(){
+    return currentScreens;
+}

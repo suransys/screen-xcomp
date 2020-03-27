@@ -29,4 +29,14 @@
     return INT_MAX;
 }
 
+-(void)setScreensChangedNotification:(void (*)(void*))callback withUserInfo:(void *)userInfo{
+    self.callback = callback;
+    self.userInfo = userInfo;
+    [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(onScreenChanged:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
+}
+
+-(void)onScreenChanged:(NSNotification*)notification{
+    self.callback(self.userInfo);
+}
+
 @end

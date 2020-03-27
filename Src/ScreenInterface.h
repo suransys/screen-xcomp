@@ -29,4 +29,24 @@ public:
     static int dockPosition();
 };
 
+
+
+class UpdatingScreen{
+    std::vector<Screen> currentScreens;
+    void notifyScreensChanged();
+    static void screensChangedCallback(void*);
+    void (*_onScreenChanged)(std::vector<Screen>, void*);
+    void * currentUserInfo;
+    
+    void * objCScreen;
+public:
+    UpdatingScreen();
+    
+    std::vector<Screen> getCurrentScreens();
+    void setScreenChangeCallback(void (*onScreenChanged)(std::vector<Screen>, void*), void* userInfo);
+    void resetCurrentScreens();
+    void screenRunLoop();
+    void screenEndLoop();
+};
+
 #endif /* Screen_hpp */
