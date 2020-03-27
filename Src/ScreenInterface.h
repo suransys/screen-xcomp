@@ -44,7 +44,6 @@ public:
     
     std::vector<Screen> getCurrentScreens();
     void setScreenChangeCallback(void (*onScreenChanged)(std::vector<Screen>, void*), void* userInfo);
-    void removeScreenChangedCallback();
     void resetCurrentScreens();
     void screenRunLoop();
     void screenEndLoop();

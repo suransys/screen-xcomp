@@ -29,14 +29,6 @@
     return INT_MAX;
 }
 
-+(void)setScreensChangedListener:(CGDisplayReconfigurationCallBack)callback withUserInfo:(void *)userInfo{
-    CGDisplayRegisterReconfigurationCallback(callback, userInfo);
-}
-
-+(void)removeScreensChangedListener:(CGDisplayReconfigurationCallBack)callback{
-    CGDisplayRemoveReconfigurationCallback(callback, nil);
-}
-
 -(void)setScreensChangedNotification:(void (*)(void*))callback withUserInfo:(void *)userInfo{
     self.callback = callback;
     self.userInfo = userInfo;
@@ -44,11 +36,6 @@
 }
 
 -(void)onScreenChanged:(NSNotification*)notification{
-    
-    NSException* myException = [NSException
-
-    exceptionWithName:@"notification called" reason:@"this is for debugging" userInfo:nil];
-    [myException raise];
     self.callback(self.userInfo);
 }
 

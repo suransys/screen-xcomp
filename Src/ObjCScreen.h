@@ -21,9 +21,6 @@
 -(NSScreen *)getMainScreen;
 -(int)getDockLocation;
 
-+(void)setScreensChangedListener:(CGDisplayReconfigurationCallBack)callback withUserInfo:(void *) userInfo;
-+(void)removeScreensChangedListener:(CGDisplayReconfigurationCallBack)callback;
-
 -(void)setScreensChangedNotification:(void (*)(void*))callback withUserInfo:(void *) userInfo;
 
 @end

@@ -53,10 +53,6 @@ ScreenObject::ScreenObject(){
     updatingScreen.screenRunLoop();
 }
 
-ScreenObject::~ScreenObject(){
-    updatingScreen.removeScreenChangedCallback();
-}
-
 EXTfldval ScreenObject::staticMethodCall(qlong methodId){
     EXTfldval fval;
     switch (methodId) {

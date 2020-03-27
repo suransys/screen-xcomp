@@ -53,7 +53,6 @@ void UpdatingScreen::screensChangedCallback(void *userInfo){
 
 UpdatingScreen::UpdatingScreen(){
     currentScreens = Screen::screenList();
-    //[ObjCScreen setScreensChangedListener:screensChangedCallback withUserInfo:this];
     
     ObjCScreen * localScreen =[[ObjCScreen alloc] init];
     [localScreen setScreensChangedNotification:screensChangedCallback withUserInfo:this];
@@ -66,19 +65,14 @@ void UpdatingScreen::setScreenChangeCallback(void (*onScreenChanged)(std::vector
     currentUserInfo = userInfo;
 }
 
-void UpdatingScreen::removeScreenChangedCallback(){
-    //[ObjCScreen removeScreensChangedListener:screensChangedCallback];
-    currentUserInfo = NULL;
-}
-
 void UpdatingScreen::notifyScreensChanged(){
-    if (_onScreenChanged){ //possible failure
+    if (_onScreenChanged){
         _onScreenChanged(currentScreens, currentUserInfo);
     }
 }
 
 void UpdatingScreen::resetCurrentScreens(){
-    //currentScreens = Screen::screenList();
+    currentScreens = Screen::screenList();
     notifyScreensChanged();
 }
 
