@@ -81,3 +81,7 @@ ________________
 `position` is an integer, either -1, 0, or 1. This tells you whether the dock is on the left, bottom, or right side of the screen, respectively
 
 `height` is the height of the dock, measured from its anchoring wall. So if the dock is anchored to the right or left side, then "height" will technically be the width, since the dock is sideways
+
+## Contributing
+Please see our [guide to contributing](https://github.com/suransys/contributing).
+
