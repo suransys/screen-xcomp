@@ -10,7 +10,6 @@
 		0C962E332411532200894DDF /* ObjCScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C962E322411532200894DDF /* ObjCScreen.m */; };
 		0C962E362411538700894DDF /* ScreenInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0C962E352411538700894DDF /* ScreenInterface.mm */; };
 		2D7566E417BE308C001F871F /* Screen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2D7566E317BE308C001F871F /* Screen.cpp */; };
-		2D7DE4B517CE03B300642BA9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2D7DE4B217CE03B300642BA9 /* InfoPlist.strings */; };
 		2DAD106F17BCEE60005A7F56 /* u_complib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DAD106E17BCEE60005A7F56 /* u_complib.framework */; };
 		2DD7697817BBA5F4005F1CFB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD7697717BBA5F4005F1CFB /* Cocoa.framework */; };
 		2DDD8B9217F437A200F4E765 /* Screen.rc in Resources */ = {isa = PBXBuildFile; fileRef = 2D7DE4B017CE03B300642BA9 /* Screen.rc */; };
@@ -28,7 +27,7 @@
 			outputFiles = (
 				"$(TEMP_FILE_DIR)/omnisrc/Localizable.strings",
 			);
-			script = "$DEVELOPER_TOOLS_DIR/omnisrc64.app/Contents/MacOS/omnisrc64 INPUT_FILE_PATH TEMP_FILE_DIR REZ_SEARCH_PATHS XCOMP\nif [ -f $TEMP_FILE_DIR/omnisrc/Bitmap.strings ]; then\ncp $TEMP_FILE_DIR/omnisrc/Bitmap.strings $INSTALL_DIR/$CONTENTS_FOLDER_PATH/Resources\nfi\nshopt -s nullglob\nif [ ! -z \"`echo $TEMP_FILE_DIR/omnisrc/*.PNG`\" ]; then\ncp $TEMP_FILE_DIR/omnisrc/*.PNG $INSTALL_DIR/$CONTENTS_FOLDER_PATH/Resources\nfi";
+			script = "$DEVELOPER_TOOLS_DIR/omnisrc64.app/Contents/MacOS/omnisrc64 INPUT_FILE_PATH TEMP_FILE_DIR REZ_SEARCH_PATHS XCOMP\nif [ -f $TEMP_FILE_DIR/omnisrc/Bitmap.strings ]; then\ncp $TEMP_FILE_DIR/omnisrc/Bitmap.strings $INSTALL_DIR/$CONTENTS_FOLDER_PATH/Resources\nfi\nshopt -s nullglob\nif [ ! -z \"`echo $TEMP_FILE_DIR/omnisrc/*.PNG`\" ]; then\ncp $TEMP_FILE_DIR/omnisrc/*.PNG $INSTALL_DIR/$CONTENTS_FOLDER_PATH/Resources\nfi\n";
 		};
 /* End PBXBuildRule section */
 
@@ -186,7 +185,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D7DE4B517CE03B300642BA9 /* InfoPlist.strings in Resources */,
 				2DDD8B9217F437A200F4E765 /* Screen.rc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

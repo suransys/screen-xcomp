@@ -8,15 +8,6 @@
 		<data>
 		yihQNYOsLVDCPkyIDQ49JAE04lY=
 		</data>
-		<key>Resources/English.lproj/InfoPlist.strings</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			RrYQ92PgFYyvBz1akaG1TXp+2Nw=
-			</data>
-			<key>optional</key>
-			<true/>
-		</dict>
 		<key>Resources/GENERIC.PNG</key>
 		<data>
 		29DpZc5azEl6hRRHzRg5UbxPeco=
@@ -38,19 +29,6 @@
 			<data>
 			dq2kAxKxNO8qeNhMdnnHCmhO3dLQrCF3NwTjY9UvnE4=
 			</data>
-		</dict>
-		<key>Resources/English.lproj/InfoPlist.strings</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			RrYQ92PgFYyvBz1akaG1TXp+2Nw=
-			</data>
-			<key>hash2</key>
-			<data>
-			my2FlytJxKUQqUgy2Hngfd1Ofv8oRUeMNCOllOUmnto=
-			</data>
-			<key>optional</key>
-			<true/>
 		</dict>
 		<key>Resources/GENERIC.PNG</key>
 		<dict>

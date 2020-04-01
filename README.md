@@ -20,7 +20,7 @@ Now copy the package tools/omnisrc64.app to xcode's tools folder, like this:
 
 Still in OSX-SDK-10.1, clone the git repo
 
-`git clone git@github.com:suransys/screen-xcomp.git`
+`git clone ssh://git@bitbucket.suran.com:7999/sda/screen-xcomp.git`
 
 In Finder, open the new cloned directory, called screen-xcomp. Open the package Screen.xcodeproj using Xcode (Clicking on this file should open it with Xcode automatically)
 
@@ -81,7 +81,3 @@ ________________
 `position` is an integer, either -1, 0, or 1. This tells you whether the dock is on the left, bottom, or right side of the screen, respectively
 
 `height` is the height of the dock, measured from its anchoring wall. So if the dock is anchored to the right or left side, then "height" will technically be the width, since the dock is sideways
-
-## Contributing
-Please see our [guide to contributing](https://github.com/suransys/contributing).
-

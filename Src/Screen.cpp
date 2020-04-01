@@ -47,10 +47,7 @@ void staticOnScreenChanged(std::vector<Screen> screens, void* userInfo){
 }
 
 ScreenObject::ScreenObject(){
-    updatingScreen = UpdatingScreen();
-    currentScreens = updatingScreen.getCurrentScreens();
-    updatingScreen.setScreenChangeCallback(staticOnScreenChanged, this);
-    updatingScreen.screenRunLoop();
+    currentScreens = Screen::screenList();
 }
 
 EXTfldval ScreenObject::staticMethodCall(qlong methodId){
@@ -207,6 +204,30 @@ void ScreenObject::onScreenChanged(std::vector<Screen> screens){
     currentScreens = screens;
 }
 
+@interface screenObserver : NSObject
+{
+}
+@property void (*callback)(std::vector<Screen>, void*);
+@property void* target;
+
+-(void)setScreenChangeCallback:(void (*)(std::vector<Screen>, void*))callback onTarget:(void *)target;
+@end
+
+@implementation  screenObserver
+-(void)didChangeScreenParameters: (NSNotification*)notification
+{
+    if (!self.callback) return;
+    self.callback(Screen::screenList(), self.target);
+}
+
+-(void)setScreenChangeCallback:(void (*)(std::vector<Screen>, void *))callback onTarget:(void *)target{
+    self.target = target;
+    self.callback = callback;
+}
+@end
+
+screenObserver* gObserver;
+
 
 // Component library entry point (name as declared in resource 31000 )
 extern "C" LRESULT OMNISWNDPROC ScreenWndProc(HWND hwnd, UINT Msg, WPARAM wParam, LPARAM lParam, EXTCompInfo* eci)
@@ -223,10 +244,13 @@ extern "C" LRESULT OMNISWNDPROC ScreenWndProc(HWND hwnd, UINT Msg, WPARAM wParam
         // For most components this can be removed - see other BLYTH component examples
         case ECM_CONNECT:
         {
-            return EXT_FLAG_LOADED|EXT_FLAG_ALWAYS_USABLE|EXT_FLAG_NVOBJECTS; // Return external flags
+            gObserver = [[screenObserver alloc] init];
+            [[NSNotificationCenter defaultCenter] addObserver:gObserver selector:@selector(didChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:[NSApplication sharedApplication]];
+            return EXT_FLAG_LOADED|EXT_FLAG_ALWAYS_USABLE|EXT_FLAG_NVOBJECTS;
         }
         case ECM_OBJCONSTRUCT:{
             ScreenObject * screenObject = new ScreenObject();
+            [gObserver setScreenChangeCallback:staticOnScreenChanged onTarget:screenObject];
             ECOinsertObject(eci, hwnd, (void*)screenObject);
             return qtrue;
         }
@@ -245,6 +269,8 @@ extern "C" LRESULT OMNISWNDPROC ScreenWndProc(HWND hwnd, UINT Msg, WPARAM wParam
         // For most components this can be removed - see other BLYTH component examples
         case ECM_DISCONNECT:
         {
+            [[NSNotificationCenter defaultCenter] removeObserver:gObserver];
+            gObserver = nil;
             return qtrue;
         }
 
@@ -273,8 +299,6 @@ extern "C" LRESULT OMNISWNDPROC ScreenWndProc(HWND hwnd, UINT Msg, WPARAM wParam
         case ECM_GETOBJECT:{
             return ECOreturnObjects(gInstLib, eci, &screenObject[0], OBJECT_COUNT);
         }
-//        case ECM_GETMETHODNAME:
-//            return ECOreturnMethods(gInstLib, eci, &screensFunction[0], NUMBER_OF_METHODS);
         case ECM_METHODCALL:{
             ScreenObject * object = (ScreenObject*)ECOfindObject(eci, hwnd);
             if (!object) {
